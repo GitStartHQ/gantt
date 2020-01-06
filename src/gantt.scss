@@ -49,6 +49,7 @@ $handle-color: #ddd !default;
 		stroke-width: 2px !important;
 		stroke: rgba(34,36,38,.15) !important;
 	}
+	.row-line-divider
 	.row-line {
 		stroke: rgba(255, 255, 255, 0.1);
 	}
@@ -163,7 +164,7 @@ $handle-color: #ddd !default;
 		fill: var(--fr-pink);
 	}
 	.status-complete {
-		fill: var(--high-green) !important;
+		fill: var(--hospital-green) !important;
 	}
 	.status-todo {
 		fill: var(--cloudy-blue);
