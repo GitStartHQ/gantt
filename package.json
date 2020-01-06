@@ -30,6 +30,7 @@
   },
   "homepage": "https://github.com/frappe/gantt",
   "devDependencies": {
+    "moment": "^2.24.0",
     "babel-preset-env": "^1.6.1",
     "deepmerge": "^2.0.1",
     "eslint": "^4.17.0",
