@@ -182,7 +182,7 @@ $handle-color: #ddd !default;
 }
 
 .gantt-container {
-	position: relative;
+	background-color: var(--dusk);
 	overflow: auto;
 	font-size: 12px;
 
