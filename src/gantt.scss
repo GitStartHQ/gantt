@@ -31,7 +31,7 @@ $handle-color: #ddd !default;
 .gantt {
 	overflow: hidden !important;
 	.grid-background {
-		fill: none;
+		fill: var(--dusk);
 	}
 	.grid-header {
 		fill: var(--dusk);
@@ -49,7 +49,6 @@ $handle-color: #ddd !default;
 		stroke-width: 2px !important;
 		stroke: rgba(34,36,38,.15) !important;
 	}
-	.row-line-divider
 	.row-line {
 		stroke: rgba(255, 255, 255, 0.1);
 	}
