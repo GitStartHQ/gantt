@@ -42,7 +42,8 @@ export default class Popup {
 
         // set position
         let position_meta;
-        if (target_element instanceof HTMLElement) {
+        /* eslint-disable-next-line */
+    if (target_element instanceof HTMLElement) {
             position_meta = target_element.getBoundingClientRect();
         } else if (target_element instanceof SVGElement) {
             position_meta = options.target_element.getBBox();

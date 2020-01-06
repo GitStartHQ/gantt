@@ -10,33 +10,58 @@ $text-color: #333 !default;
 $blue: #a3a3ff !default;
 $handle-color: #ddd !default;
 
+:root {
+	--dusk: #43496a;
+	--soft-dusk: #43496a99;
+	--dark: #192438;
+	--cloudy-blue: #bfc2c7;
+	--pale-grey: #eff1f5;
+	--tea: #60be85;
+	--soft-green-24: rgba(120, 194, 143, 0.24);
+	--hospital-green: #99dfaf;
+	--high-green: #A7FFC2;
+	--soft-green: #78c28f;
+	--dark-10: rgba(25, 36, 56, 0.1);
+	--fr-yellow: #fdbd39;
+	--fr-red: #e25555;
+	--fr-pink: #FF8FA1;
+	--fr-grey: #72757e;
+}
+
 .gantt {
+	overflow: hidden !important;
 	.grid-background {
 		fill: none;
 	}
 	.grid-header {
-		fill: #ffffff;
+		fill: var(--dusk);
+		color: #fff;
 		stroke: $border-color;
 		stroke-width: 1.4;
 	}
 	.grid-row {
-		fill: #ffffff;
+		fill: var(--dusk);
+		border: none;
 	}
-	.grid-row:nth-child(even) {
-		fill: $light-bg;
+	.grid-row-divider {
+		fill: #323956;
+		border: none;
+		stroke-width: 2px !important;
+		stroke: rgba(34,36,38,.15) !important;
 	}
 	.row-line {
-		stroke: $light-border-color;
+		stroke: rgba(255, 255, 255, 0.1);
 	}
 	.tick {
-		stroke: $border-color;
-		stroke-width: 0.2;
+		stroke: #323956;
+		stroke-width: 0.6;
 		&.thick {
-			stroke-width: 0.4;
+			stroke: rgba(167, 255, 194, 0.3);
+			stroke-width: 1.5;
 		}
 	}
 	.today-highlight {
-		fill: $light-yellow;
+		fill: var(--hospital-green);
 		opacity: 0.5;
 	}
 
@@ -47,14 +72,14 @@ $handle-color: #ddd !default;
 	}
 
 	.bar {
-		fill: $bar-color;
+		fill: var(--pale-grey);
 		stroke: $bar-stroke;
 		stroke-width: 0;
 		transition: stroke-width .3s ease;
 		user-select: none;
 	}
 	.bar-progress {
-		fill: $blue;
+		fill: transparent;
 	}
 	.bar-invalid {
 		fill: transparent;
@@ -72,9 +97,10 @@ $handle-color: #ddd !default;
 		text-anchor: middle;
 		font-size: 12px;
 		font-weight: lighter;
+		visibility: hidden;
 
 		&.big {
-			fill: $text-light;
+			fill: #fff;
 			text-anchor: start;
 		}
 	}
@@ -92,27 +118,20 @@ $handle-color: #ddd !default;
 		outline: none;
 
 		&:hover {
-			.bar {
-				fill: darken($bar-color, 5);
-			}
-
-			.bar-progress {
-				fill: darken($blue, 5);
-			}
-
 			.handle {
 				visibility: visible;
 				opacity: 1;
+			}
+
+			.bar-label {
+				visibility: visible;
 			}
 		}
 
 		&.active {
 			.bar {
-				fill: darken($bar-color, 5);
-			}
-
-			.bar-progress {
-				fill: darken($blue, 5);
+				stroke-width: 3px;
+				stroke: var(--hospital-green);
 			}
 		}
 	}
@@ -122,14 +141,43 @@ $handle-color: #ddd !default;
 		text-anchor: middle;
 	}
 	.upper-text {
-		fill: $text-light;
+		fill: var(--high-green);
 	}
 	.lower-text {
-		fill: $text-color;
+		fill: #fff;
 	}
 
 	.hide {
 		display: none;
+	}
+
+	g[class*='unscheduled'] {
+		display: none;
+	}
+
+	g[class*='divider'] {
+		display: none;
+	}
+
+	.status-failed {
+		fill: var(--fr-pink);
+	}
+	.status-complete {
+		fill: var(--high-green) !important;
+	}
+	.status-todo {
+		fill: var(--cloudy-blue);
+	}
+	.status-in_progress {
+		fill: #aba4de;
+	}
+	.status-redline {
+		stroke-width: 3px;
+		fill: transparent;
+		stroke: var(--fr-red);
+	}
+	.bar-overdue {
+		fill: #FFBDAD;
 	}
 }
 
@@ -138,31 +186,31 @@ $handle-color: #ddd !default;
 	overflow: auto;
 	font-size: 12px;
 
-	.popup-wrapper {
-		position: absolute;
-		top: 0;
-		left: 0;
-		background: rgba(0, 0, 0, 0.8);
-		padding: 0;
-		color: #959da5;
-		border-radius: 3px;
+	// .popup-wrapper {
+	// 	position: absolute;
+	// 	top: 0;
+	// 	left: 0;
+	// 	background: rgba(0, 0, 0, 0.8);
+	// 	padding: 0;
+	// 	color: #959da5;
+	// 	border-radius: 3px;
 
-		.title {
-			border-bottom: 3px solid $blue;
-			padding: 10px;
-		}
+	// 	.title {
+	// 		border-bottom: 3px solid $blue;
+	// 		padding: 10px;
+	// 	}
 
-		.subtitle {
-			padding: 10px;
-			color: #dfe2e5;
-		}
+	// 	.subtitle {
+	// 		padding: 10px;
+	// 		color: #dfe2e5;
+	// 	}
 
-		.pointer {
-			position: absolute;
-			height: 5px;
-			margin: 0 0 0 -5px;
-			border: 5px solid transparent;
-			border-top-color: rgba(0, 0, 0, 0.8);
-		}
-	}
+	// 	.pointer {
+	// 		position: absolute;
+	// 		height: 5px;
+	// 		margin: 0 0 0 -5px;
+	// 		border: 5px solid transparent;
+	// 		border-top-color: rgba(0, 0, 0, 0.8);
+	// 	}
+	// }
 }

@@ -1,3 +1,6 @@
+const moment = require('moment');
+
+/* eslint-disable camelcase */
 const YEAR = 'year';
 const MONTH = 'month';
 const DAY = 'day';
@@ -99,7 +102,8 @@ export default {
             let vals = date_parts;
 
             if (time_parts && time_parts.length) {
-                if (time_parts.length == 4) {
+                // eslint-disable-next-line
+        if (time_parts.length == 4) {
                     time_parts[3] = '0.' + time_parts[3];
                     time_parts[3] = parseFloat(time_parts[3]) * 1000;
                 }
@@ -132,6 +136,10 @@ export default {
         return date_string + (with_time ? ' ' + time_string : '');
     },
 
+    short_hand_format(date) {
+        return moment(date).format('ll');
+    },
+
     format(date, format_string = 'YYYY-MM-DD HH:mm:ss.SSS', lang = 'en') {
         const values = this.get_date_values(date).map(d => padStart(d, 2, 0));
         const format_map = {
@@ -141,7 +149,7 @@ export default {
             HH: values[3],
             mm: values[4],
             ss: values[5],
-            SSS:values[6],
+            SSS: values[6],
             D: values[2],
             MMMM: month_names[lang][+values[1]],
             MMM: month_names[lang][+values[1]]
@@ -273,7 +281,8 @@ export default {
 
         // Feb
         const year = date.getFullYear();
-        if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) {
+        // eslint-disable-next-line
+    if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) {
             return 29;
         }
         return 28;

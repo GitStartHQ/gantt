@@ -60,7 +60,7 @@ export default class Gantt {
         // popup wrapper
         this.popup_wrapper = document.createElement('div');
         this.popup_wrapper.classList.add('popup-wrapper');
-        this.$container.appendChild(this.popup_wrapper);
+        // this.$container.appendChild(this.popup_wrapper)
     }
 
     setup_options(options) {
@@ -76,8 +76,8 @@ export default class Gantt {
                 'Month',
                 'Year'
             ],
-            bar_height: 20,
-            bar_corner_radius: 3,
+            bar_height: 30,
+            bar_corner_radius: 5,
             arrow_curve: 5,
             padding: 18,
             view_mode: 'Day',
@@ -128,6 +128,7 @@ export default class Gantt {
 
             // invalid flag
             if (!task.start || !task.end) {
+                console.log(task);
                 task.invalid = true;
             }
 
@@ -164,9 +165,11 @@ export default class Gantt {
         }
     }
 
-    refresh(tasks) {
+    refresh(tasks, options) {
         this.setup_tasks(tasks);
+        this.setup_options(options);
         this.change_view_mode();
+        this.bind_events();
     }
 
     change_view_mode(mode = this.options.view_mode) {
@@ -317,7 +320,7 @@ export default class Gantt {
         });
 
         $.attr(this.$svg, {
-            height: grid_height + this.options.padding + 100,
+            height: grid_height - 9,
             width: '100%'
         });
     }
@@ -330,14 +333,14 @@ export default class Gantt {
         const row_height = this.options.bar_height + this.options.padding;
 
         let row_y = this.options.header_height + this.options.padding / 2;
-
-        for (let task of this.tasks) {
+        /* eslint-disable-next-line */
+    for (let task of this.tasks) {
             createSVG('rect', {
                 x: 0,
                 y: row_y,
                 width: row_width,
                 height: row_height,
-                class: 'grid-row',
+                class: task.divider ? 'grid-row-divider' : 'grid-row',
                 append_to: rows_layer
             });
 
@@ -541,7 +544,8 @@ export default class Gantt {
             'Half Day_lower': this.options.column_width * 2 / 2,
             'Half Day_upper': 0,
             Day_lower: this.options.column_width / 2,
-            Day_upper: this.options.column_width * 30 / 2,
+            // Day_upper: this.options.column_width * 30 / 2,
+            Day_upper: this.options.column_width - 5,
             Week_lower: 0,
             Week_upper: this.options.column_width * 4 / 2,
             Month_lower: this.options.column_width / 2,
@@ -612,6 +616,7 @@ export default class Gantt {
 
     set_scroll_position() {
         const parent_element = this.$svg.parentElement;
+        const moment = require('moment');
         if (!parent_element) return;
 
         const hours_before_first_task = date_utils.diff(
@@ -620,11 +625,27 @@ export default class Gantt {
             'hour'
         );
 
-        const scroll_pos =
+        let scroll_pos =
             hours_before_first_task /
                 this.options.step *
                 this.options.column_width -
             this.options.column_width;
+        if (this.gantt_end > moment()._d) {
+            const days_before_today = date_utils.diff(
+                moment()._d,
+                this.gantt_start,
+                'day'
+            );
+            const hours_before_today =
+                days_before_today > 7
+                    ? (days_before_today - 7) * 24
+                    : days_before_today * 24;
+            scroll_pos =
+                hours_before_today /
+                    this.options.step *
+                    this.options.column_width -
+                this.options.column_width;
+        }
 
         parent_element.scrollLeft = scroll_pos;
     }
@@ -692,7 +713,8 @@ export default class Gantt {
         $.on(this.$svg, 'mousemove', e => {
             if (!action_in_progress()) return;
             const dx = e.offsetX - x_on_start;
-            const dy = e.offsetY - y_on_start;
+            /* eslint-disable-next-line */
+      const dy = e.offsetY - y_on_start
 
             bars.forEach(bar => {
                 const $bar = bar.$bar;
@@ -723,7 +745,9 @@ export default class Gantt {
 
         document.addEventListener('mouseup', e => {
             if (is_dragging || is_resizing_left || is_resizing_right) {
-                bars.forEach(bar => bar.group.classList.remove('active'));
+                bars.forEach(bar => {
+                    bar.group.classList.remove('active');
+                });
             }
 
             is_dragging = false;
@@ -773,7 +797,8 @@ export default class Gantt {
         $.on(this.$svg, 'mousemove', e => {
             if (!is_resizing) return;
             let dx = e.offsetX - x_on_start;
-            let dy = e.offsetY - y_on_start;
+            /* eslint-disable-next-line */
+      let dy = e.offsetY - y_on_start
 
             if (dx > $bar_progress.max_dx) {
                 dx = $bar_progress.max_dx;
@@ -813,9 +838,9 @@ export default class Gantt {
     }
 
     get_snap_position(dx) {
-        let odx = dx,
-            rem,
-            position;
+        let odx = dx;
+        let rem;
+        let position;
 
         if (this.view_is('Week')) {
             rem = dx % (this.options.column_width / 7);
@@ -909,7 +934,6 @@ export default class Gantt {
                     cur_date <= prev_date ? cur_date : prev_date
             );
     }
-
     /**
      * Clear all elements from the parent svg element
      *
