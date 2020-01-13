@@ -128,7 +128,6 @@ export default class Gantt {
 
             // invalid flag
             if (!task.start || !task.end) {
-                console.log(task);
                 task.invalid = true;
             }
 

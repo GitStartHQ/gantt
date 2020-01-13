@@ -404,6 +404,22 @@ export default class Bar {
         );
     }
 
+    update_bar_with_data({ start_date, end_date }) {
+        this.task._start = start_date
+        this.task._end = end_date
+        const x = this.compute_x()
+        this.duration =
+            date_utils.diff(this.task._end, this.task._start, 'hour') /
+            this.gantt.options.step;
+        const width = this.gantt.options.column_width * this.duration
+        if (width !== this.width){
+            this.update_bar_position({ x, width })
+        } else {
+            this.update_bar_position({ x })
+        }
+        this.update_label_content({ new_start_date: start_date, new_end_date: end_date })
+    }
+
     get_snap_position(dx) {
         let odx = dx;
 
