@@ -92,15 +92,14 @@ $handle-color: #ddd !default;
 		}
 	}
 	.bar-label {
-		fill: #fff;
+		fill: transparent;
 		dominant-baseline: central;
 		text-anchor: middle;
 		font-size: 12px;
 		font-weight: lighter;
-		visibility: hidden;
 
 		&.big {
-			fill: #fff;
+			fill: transparent;
 			text-anchor: start;
 		}
 	}
@@ -124,7 +123,7 @@ $handle-color: #ddd !default;
 			}
 
 			.bar-label {
-				visibility: visible;
+				fill: #fff;
 			}
 		}
 
