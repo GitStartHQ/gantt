@@ -176,10 +176,10 @@ $handle-color: #ddd !default;
 		stroke: var(--fr-red);
 	}
 	.status-hold {
-		fill: var(--fr-yellow);
+		fill: var(--fr-yellow) !important;
 	}
 	.status-canceled {
-		fill: black;
+		fill: black !important;
 	}
 	.bar-overdue {
 		fill: #FFBDAD;
