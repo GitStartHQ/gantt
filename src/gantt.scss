@@ -175,6 +175,12 @@ $handle-color: #ddd !default;
 		fill: transparent;
 		stroke: var(--fr-red);
 	}
+	.status-hold {
+		fill: var(--fr-yellow);
+	}
+	.status-canceled {
+		fill: black;
+	}
 	.bar-overdue {
 		fill: #FFBDAD;
 	}
