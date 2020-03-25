@@ -207,10 +207,9 @@ export default class Gantt {
         this.setup_gantt_dates();
         this.setup_date_values();
     }
-
+    // here
     setup_gantt_dates() {
         this.gantt_start = this.gantt_end = null;
-
         for (let task of this.tasks) {
             // set global start and end date
             if (!this.gantt_start || task._start < this.gantt_start) {
@@ -220,6 +219,8 @@ export default class Gantt {
                 this.gantt_end = task._end;
             }
         }
+        if (this.options.start_date) this.gantt_start = new Date(this.options.start_date);
+        if (this.options.end_date) this.gantt_end = new Date(this.options.end_date);
 
         this.gantt_start = date_utils.start_of(this.gantt_start, 'day');
         this.gantt_end = date_utils.start_of(this.gantt_end, 'day');
@@ -235,8 +236,8 @@ export default class Gantt {
             this.gantt_start = date_utils.add(this.gantt_start, -2, 'year');
             this.gantt_end = date_utils.add(this.gantt_end, 2, 'year');
         } else {
-            this.gantt_start = date_utils.add(this.gantt_start, -1, 'month');
-            this.gantt_end = date_utils.add(this.gantt_end, 1, 'month');
+            this.gantt_start = date_utils.add(this.gantt_start, -2, 'day');
+            this.gantt_end = date_utils.add(this.gantt_end, 1, 'day');
         }
     }
 
@@ -253,11 +254,7 @@ export default class Gantt {
                 } else if (this.view_is('Month')) {
                     cur_date = date_utils.add(cur_date, 1, 'month');
                 } else {
-                    cur_date = date_utils.add(
-                        cur_date,
-                        this.options.step,
-                        'hour'
-                    );
+                    cur_date = date_utils.add(cur_date, this.options.step, 'hour');
                 }
             }
             this.dates.push(cur_date);
