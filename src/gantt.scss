@@ -72,7 +72,7 @@ $handle-color: #ddd !default;
 	}
 
 	.bar {
-		// fill: var(--pale-grey);
+		fill: transparent;
 		stroke: $bar-stroke;
 		stroke-width: 0;
 		transition: stroke-width .3s ease;
@@ -130,7 +130,6 @@ $handle-color: #ddd !default;
 		&.active {
 			.bar {
 				stroke-width: 3px;
-				filter: drop-shadow(16px 16px 20px red) invert(75%);
 			}
 		}
 	}
