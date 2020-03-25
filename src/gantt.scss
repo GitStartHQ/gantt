@@ -72,7 +72,7 @@ $handle-color: #ddd !default;
 	}
 
 	.bar {
-		fill: var(--pale-grey);
+		// fill: var(--pale-grey);
 		stroke: $bar-stroke;
 		stroke-width: 0;
 		transition: stroke-width .3s ease;
@@ -130,7 +130,7 @@ $handle-color: #ddd !default;
 		&.active {
 			.bar {
 				stroke-width: 3px;
-				stroke: var(--hospital-green);
+				filter: drop-shadow(16px 16px 20px red) invert(75%);
 			}
 		}
 	}
@@ -150,6 +150,10 @@ $handle-color: #ddd !default;
 		display: none;
 	}
 
+	.show {
+		display: block;
+	}
+
 	g[class*='unscheduled'] {
 		display: none;
 	}
@@ -165,24 +169,29 @@ $handle-color: #ddd !default;
 		fill: var(--hospital-green) !important;
 	}
 	.status-todo {
-		fill: var(--cloudy-blue);
+		fill: rgba(145, 151, 163, 0.3);
+		stroke-width: 2px;
+		stroke: rgba(255, 255, 255, 0.3);
 	}
 	.status-in_progress {
-		fill: #aba4de;
+		fill: transparent;
+		stroke-width: 2px;
+		stroke: #A7FFC2;
 	}
 	.status-redline {
-		stroke-width: 3px;
+		stroke-width: 2px;
 		fill: transparent;
-		stroke: var(--fr-red);
+		stroke: var(--fr-pink);
 	}
 	.status-hold {
-		fill: var(--fr-yellow) !important;
+		fill: transparent;
+		stroke-width: 2px;
+		stroke: white;
 	}
 	.status-canceled {
-		fill: black !important;
-	}
-	.bar-overdue {
-		fill: #FFBDAD;
+		fill: transparent;
+		stroke-width: 2px;
+		stroke: rgba(0, 0, 0, 0.5);
 	}
 }
 
@@ -191,31 +200,32 @@ $handle-color: #ddd !default;
 	overflow: auto;
 	font-size: 12px;
 
-	// .popup-wrapper {
-	// 	position: absolute;
-	// 	top: 0;
-	// 	left: 0;
-	// 	background: rgba(0, 0, 0, 0.8);
-	// 	padding: 0;
-	// 	color: #959da5;
-	// 	border-radius: 3px;
+	.popup-wrapper {
+		z-index: 3;
+		position: absolute;
+		top: 0;
+		left: 0;
+		background: rgba(0, 0, 0, 0.8);
+		padding: 0;
+		color: #959da5;
+		border-radius: 3px;
 
-	// 	.title {
-	// 		border-bottom: 3px solid $blue;
-	// 		padding: 10px;
-	// 	}
+		.title {
+			border-bottom: 3px solid $blue;
+			padding: 10px;
+		}
 
-	// 	.subtitle {
-	// 		padding: 10px;
-	// 		color: #dfe2e5;
-	// 	}
+		.subtitle {
+			padding: 10px;
+			color: #dfe2e5;
+		}
 
-	// 	.pointer {
-	// 		position: absolute;
-	// 		height: 5px;
-	// 		margin: 0 0 0 -5px;
-	// 		border: 5px solid transparent;
-	// 		border-top-color: rgba(0, 0, 0, 0.8);
-	// 	}
-	// }
+		.pointer {
+			position: absolute;
+			height: 5px;
+			margin: 0 0 0 -5px;
+			border: 5px solid transparent;
+			border-top-color: rgba(0, 0, 0, 0.8);
+		}
+	}
 }

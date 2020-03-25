@@ -69,9 +69,7 @@ export default class Bar {
 
     draw() {
         this.draw_bar();
-        // if (this.task.thumbnail) {
-        //   this.draw_thumbnail()
-        // }
+        this.draw_thumbnail();
         this.draw_progress_bar();
         this.draw_label();
         this.draw_resize_handles();
@@ -95,9 +93,6 @@ export default class Bar {
         }
         if (this.unscheduled) {
             this.$bar.classList.add('bar-unscheduled');
-        }
-        if (this.task.overdue) {
-            this.$bar.classList.add('bar-overdue');
         }
         this.$bar.classList.add(`status-${this.status}`);
     }
@@ -125,8 +120,8 @@ export default class Bar {
     }
 
     draw_thumbnail() {
-        let x_offset = 10;
-        let y_offset = 2;
+        let x_offset = 0;
+        let y_offset = 5;
         let defs, clipPath;
 
         defs = createSVG('defs', {
@@ -137,8 +132,8 @@ export default class Bar {
             id: 'rect_' + this.task.id,
             x: this.x + x_offset,
             y: this.y + y_offset,
-            width: this.image_size,
-            height: this.image_size,
+            width: 20,
+            height: 20,
             rx: '15',
             class: 'img_mask',
             append_to: defs
@@ -154,12 +149,12 @@ export default class Bar {
             append_to: clipPath
         });
 
-        createSVG('image', {
+        this.$thumbnail = createSVG('image', {
             x: this.x + x_offset,
             y: this.y + y_offset,
-            width: this.image_size,
-            height: this.image_size,
-            class: 'bar-img',
+            width: 20,
+            height: 20,
+            class: `bar-img ${this.task.overdue ? 'show' : 'hide'}`,
             href: this.task.thumbnail,
             clipPath: 'clip_' + this.task.id,
             append_to: this.bar_group
@@ -320,13 +315,15 @@ export default class Bar {
         this.update_label_content({ new_start_date, new_end_date });
 
         if (new_end_date > date_utils.today()) {
-            if (this.$bar.classList.contains('bar-overdue')) {
-                this.$bar.classList.remove('bar-overdue');
+            if (this.$thumbnail.classList.contains('show')) {
+                this.$thumbnail.classList.remove('show');
+                this.$thumbnail.classList.add('hide');
             }
         }
         if (new_end_date < date_utils.today()) {
-            if (!this.$bar.classList.contains('bar-overdue')) {
-                this.$bar.classList.add('bar-overdue');
+            if (this.$thumbnail.classList.contains('hide')) {
+                this.$thumbnail.classList.remove('hide');
+                this.$thumbnail.classList.add('show');
             }
         }
 
@@ -480,15 +477,27 @@ export default class Bar {
     }
 
     update_label_position() {
+        const img_mask = this.bar_group.querySelector('.img_mask') || '';
         const bar = this.$bar;
 
         const label = this.group.querySelector('.bar-label');
+        const img = this.group.querySelector('.bar-img');
+
+        let padding = -25;
 
         if (label.getBoundingClientRect().width > bar.getWidth()) {
             label.classList.add('big');
             label.setAttribute('x', bar.getX() + bar.getWidth() + 5);
+            if (img) {
+                img.setAttribute('x', bar.getX() + bar.getWidth() + padding);
+                img_mask.setAttribute('x', bar.getX() + bar.getWidth() + padding);
+            }
         } else {
             label.classList.remove('big');
+            if (img) {
+                img.setAttribute('x', bar.getX() + padding);
+                img_mask.setAttribute('x', bar.getX() + padding);
+            }
             label.setAttribute('x', bar.getX() + bar.getWidth() / 2);
         }
     }
