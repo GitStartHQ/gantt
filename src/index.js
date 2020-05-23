@@ -66,7 +66,7 @@ export default class Gantt {
     setup_options(options) {
         const default_options = {
             header_height: 50,
-            column_width: 30,
+            column_width: 10,
             step: 24,
             view_modes: [
                 'Quarter Day',
@@ -84,8 +84,10 @@ export default class Gantt {
             date_format: 'YYYY-MM-DD',
             popup_trigger: 'click',
             custom_popup_html: null,
-            language: 'en'
+            language: 'en',
+            popup_text: '',
         };
+        console.log(`options: ${JSON.stringify(options)}`)
         this.options = Object.assign({}, default_options, options);
     }
 
@@ -194,10 +196,10 @@ export default class Gantt {
             this.options.column_width = 140;
         } else if (view_mode === 'Month') {
             this.options.step = 24 * 30;
-            this.options.column_width = 120;
+            this.options.column_width = 430;
         } else if (view_mode === 'Year') {
             this.options.step = 24 * 365;
-            this.options.column_width = 120;
+            this.options.column_width = 200;
         }
     }
 
@@ -228,10 +230,10 @@ export default class Gantt {
             this.gantt_end = date_utils.add(this.gantt_end, 7, 'day');
         } else if (this.view_is('Month')) {
             this.gantt_start = date_utils.start_of(this.gantt_start, 'year');
-            this.gantt_end = date_utils.add(this.gantt_end, 1, 'year');
+            this.gantt_end = date_utils.add(this.gantt_end,1 , 'year');
         } else if (this.view_is('Year')) {
-            this.gantt_start = date_utils.add(this.gantt_start, -2, 'year');
-            this.gantt_end = date_utils.add(this.gantt_end, 2, 'year');
+            this.gantt_start = date_utils.add(this.gantt_start, -3, 'year');
+            this.gantt_end = date_utils.add(this.gantt_end, 3, 'year');
         } else {
             this.gantt_start = date_utils.add(this.gantt_start, -1, 'month');
             this.gantt_end = date_utils.add(this.gantt_end, 1, 'month');
@@ -340,16 +342,7 @@ export default class Gantt {
                 class: 'grid-row',
                 append_to: rows_layer
             });
-
-            createSVG('line', {
-                x1: 0,
-                y1: row_y + row_height,
-                x2: row_width,
-                y2: row_y + row_height,
-                class: 'row-line',
-                append_to: lines_layer
-            });
-
+            
             row_y += this.options.bar_height + this.options.padding;
         }
     }
@@ -357,6 +350,16 @@ export default class Gantt {
     make_grid_header() {
         const header_width = this.dates.length * this.options.column_width;
         const header_height = this.options.header_height + 10;
+        const lines_layer = createSVG('g', { append_to: this.layers.grid });
+
+        createSVG('line', {
+            x1: 0,
+            y1: header_height - 4,
+            x2: header_width,
+            y2: header_height - 4,
+            class: 'grid-header-stroke',
+            append_to: lines_layer
+        });
         createSVG('rect', {
             x: 0,
             y: 0,
@@ -365,6 +368,7 @@ export default class Gantt {
             class: 'grid-header',
             append_to: this.layers.grid
         });
+        
     }
 
     make_grid_ticks() {
@@ -441,7 +445,7 @@ export default class Gantt {
         for (let date of this.get_dates_to_draw()) {
             createSVG('text', {
                 x: date.lower_x,
-                y: date.lower_y,
+                y: date.lower_y -5,
                 innerHTML: date.lower_text,
                 class: 'lower-text',
                 append_to: this.layers.date

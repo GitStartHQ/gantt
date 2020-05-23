@@ -24,6 +24,20 @@ const month_names = {
         'November',
         'December'
     ],
+    es: [
+        'Enero',
+        'Febrero',
+        'Marzo',
+        'Abril',
+        'Mayo',
+        'Junio',
+        'Julio',
+        'Agosto',
+        'Septiembre',
+        'Octubre',
+        'Noviembre',
+        'Diciembre'
+    ],
     ru: [
         'Январь',
         'Февраль',
@@ -37,6 +51,34 @@ const month_names = {
         'Октябрь',
         'Ноябрь',
         'Декабрь'
+    ],
+    ptBr: [
+        'Janeiro',
+        'Fevereiro',
+        'Março',
+        'Abril',
+        'Maio',
+        'Junho',
+        'Julho',
+        'Agosto',
+        'Setembro',
+        'Outubro',
+        'Novembro',
+        'Dezembro'
+    ],
+    fr: [
+        'Janvier',
+        'Février',
+        'Mars',
+        'Avril',
+        'Mai',
+        'Juin',
+        'Juillet',
+        'Août',
+        'Septembre',
+        'Octobre',
+        'Novembre',
+        'Décembre'
     ]
 };
 
@@ -585,10 +627,11 @@ class Bar {
     show_popup() {
         if (this.gantt.bar_being_dragged) return;
 
-        const start_date = date_utils.format(this.task._start, 'MMM D');
+        const start_date = date_utils.format(this.task._start, 'MMM D', this.gantt.options.language);
         const end_date = date_utils.format(
             date_utils.add(this.task._end, -1, 'second'),
-            'MMM D'
+            'MMM D',
+            this.gantt.options.language
         );
         const subtitle = start_date + ' - ' + end_date;
 
@@ -596,7 +639,7 @@ class Bar {
             target_element: this.$bar,
             title: this.task.name,
             subtitle: subtitle,
-            task: this.task
+            task: this.task,
         });
     }
 
@@ -887,6 +930,7 @@ class Arrow {
 
 class Popup {
     constructor(parent, custom_html) {
+        console.log(`parent: ${JSON.stringify(parent)}`);
         this.parent = parent;
         this.custom_html = custom_html;
         this.make();
@@ -921,8 +965,7 @@ class Popup {
             this.parent.innerHTML = html;
             this.pointer = this.parent.querySelector('.pointer');
         } else {
-            // set data
-            this.title.innerHTML = options.title;
+            this.title.innerHTML = options.task.popup_text;
             this.subtitle.innerHTML = options.subtitle;
             this.parent.style.width = this.parent.clientWidth + 'px';
         }
@@ -941,8 +984,8 @@ class Popup {
             this.parent.style.top = position_meta.y + 'px';
 
             this.pointer.style.transform = 'rotateZ(90deg)';
-            this.pointer.style.left = '-7px';
-            this.pointer.style.top = '2px';
+            this.pointer.style.left = '-5px';
+            this.pointer.style.top = '45%';
         }
 
         // show
@@ -1014,7 +1057,7 @@ class Gantt {
     setup_options(options) {
         const default_options = {
             header_height: 50,
-            column_width: 30,
+            column_width: 10,
             step: 24,
             view_modes: [
                 'Quarter Day',
@@ -1032,8 +1075,10 @@ class Gantt {
             date_format: 'YYYY-MM-DD',
             popup_trigger: 'click',
             custom_popup_html: null,
-            language: 'en'
+            language: 'en',
+            popup_text: '',
         };
+        console.log(`options: ${JSON.stringify(options)}`);
         this.options = Object.assign({}, default_options, options);
     }
 
@@ -1142,10 +1187,10 @@ class Gantt {
             this.options.column_width = 140;
         } else if (view_mode === 'Month') {
             this.options.step = 24 * 30;
-            this.options.column_width = 120;
+            this.options.column_width = 430;
         } else if (view_mode === 'Year') {
             this.options.step = 24 * 365;
-            this.options.column_width = 120;
+            this.options.column_width = 200;
         }
     }
 
@@ -1176,10 +1221,10 @@ class Gantt {
             this.gantt_end = date_utils.add(this.gantt_end, 7, 'day');
         } else if (this.view_is('Month')) {
             this.gantt_start = date_utils.start_of(this.gantt_start, 'year');
-            this.gantt_end = date_utils.add(this.gantt_end, 1, 'year');
+            this.gantt_end = date_utils.add(this.gantt_end,1 , 'year');
         } else if (this.view_is('Year')) {
-            this.gantt_start = date_utils.add(this.gantt_start, -2, 'year');
-            this.gantt_end = date_utils.add(this.gantt_end, 2, 'year');
+            this.gantt_start = date_utils.add(this.gantt_start, -3, 'year');
+            this.gantt_end = date_utils.add(this.gantt_end, 3, 'year');
         } else {
             this.gantt_start = date_utils.add(this.gantt_start, -1, 'month');
             this.gantt_end = date_utils.add(this.gantt_end, 1, 'month');
@@ -1288,16 +1333,7 @@ class Gantt {
                 class: 'grid-row',
                 append_to: rows_layer
             });
-
-            createSVG('line', {
-                x1: 0,
-                y1: row_y + row_height,
-                x2: row_width,
-                y2: row_y + row_height,
-                class: 'row-line',
-                append_to: lines_layer
-            });
-
+            
             row_y += this.options.bar_height + this.options.padding;
         }
     }
@@ -1305,6 +1341,16 @@ class Gantt {
     make_grid_header() {
         const header_width = this.dates.length * this.options.column_width;
         const header_height = this.options.header_height + 10;
+        const lines_layer = createSVG('g', { append_to: this.layers.grid });
+
+        createSVG('line', {
+            x1: 0,
+            y1: header_height - 4,
+            x2: header_width,
+            y2: header_height - 4,
+            class: 'grid-header-stroke',
+            append_to: lines_layer
+        });
         createSVG('rect', {
             x: 0,
             y: 0,
@@ -1313,6 +1359,7 @@ class Gantt {
             class: 'grid-header',
             append_to: this.layers.grid
         });
+        
     }
 
     make_grid_ticks() {
@@ -1389,7 +1436,7 @@ class Gantt {
         for (let date of this.get_dates_to_draw()) {
             createSVG('text', {
                 x: date.lower_x,
-                y: date.lower_y,
+                y: date.lower_y -5,
                 innerHTML: date.lower_text,
                 class: 'lower-text',
                 append_to: this.layers.date

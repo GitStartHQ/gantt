@@ -1,5 +1,6 @@
 export default class Popup {
     constructor(parent, custom_html) {
+        console.log(`parent: ${JSON.stringify(parent)}`)
         this.parent = parent;
         this.custom_html = custom_html;
         this.make();
@@ -34,8 +35,7 @@ export default class Popup {
             this.parent.innerHTML = html;
             this.pointer = this.parent.querySelector('.pointer');
         } else {
-            // set data
-            this.title.innerHTML = options.title;
+            this.title.innerHTML = options.task.popup_text;
             this.subtitle.innerHTML = options.subtitle;
             this.parent.style.width = this.parent.clientWidth + 'px';
         }
@@ -54,8 +54,8 @@ export default class Popup {
             this.parent.style.top = position_meta.y + 'px';
 
             this.pointer.style.transform = 'rotateZ(90deg)';
-            this.pointer.style.left = '-7px';
-            this.pointer.style.top = '2px';
+            this.pointer.style.left = '-5px';
+            this.pointer.style.top = '45%';
         }
 
         // show
