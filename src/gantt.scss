@@ -1,7 +1,7 @@
 $bar-color: #b8c2cc !default;
 $bar-stroke: #8D99A6 !default;
-$border-color: #e0e0e0 !default;
-$light-bg: #f5f5f5 !default;
+$border-color: #24C4CC !default;
+$grid-bg: #ECECEB !default;
 $light-border-color: #ebeff2 !default;
 $light-yellow: #fcf8e3 !default;
 $text-muted: #666 !default;
@@ -9,30 +9,37 @@ $text-light: #555 !default;
 $text-color: #333 !default;
 $blue: #a3a3ff !default;
 $handle-color: #ddd !default;
+$popup_bg: #9C43FF !default;
 
 .gantt {
 	.grid-background {
 		fill: none;
 	}
 	.grid-header {
-		fill: #ffffff;
+		fill: $grid-bg;
+		opacity: 0.3;
+	}
+	.grid-header-stroke {
 		stroke: $border-color;
-		stroke-width: 1.4;
+		stroke-width: 10;
+		margin-bottom: 20px;
 	}
 	.grid-row {
-		fill: #ffffff;
+		fill: $grid-bg;
+		opacity: 0.4;
 	}
 	.grid-row:nth-child(even) {
-		fill: $light-bg;
+		fill: $grid-bg;
+		opacity: 0.4;
 	}
 	.row-line {
 		stroke: $light-border-color;
 	}
 	.tick {
 		stroke: $border-color;
-		stroke-width: 0.2;
+		stroke-width: 0.5;
 		&.thick {
-			stroke-width: 0.4;
+			stroke-width: 1;
 		}
 	}
 	.today-highlight {
@@ -93,7 +100,7 @@ $handle-color: #ddd !default;
 
 		&:hover {
 			.bar {
-				fill: darken($bar-color, 5);
+				fill: #201A3D;
 			}
 
 			.bar-progress {
@@ -108,7 +115,7 @@ $handle-color: #ddd !default;
 
 		&.active {
 			.bar {
-				fill: darken($bar-color, 5);
+				fill: #201A3D;
 			}
 
 			.bar-progress {
@@ -142,7 +149,7 @@ $handle-color: #ddd !default;
 		position: absolute;
 		top: 0;
 		left: 0;
-		background: rgba(0, 0, 0, 0.8);
+		background: $popup_bg;
 		padding: 0;
 		color: #959da5;
 		border-radius: 3px;
@@ -150,6 +157,7 @@ $handle-color: #ddd !default;
 		.title {
 			border-bottom: 3px solid $blue;
 			padding: 10px;
+			color: white;
 		}
 
 		.subtitle {
@@ -159,10 +167,10 @@ $handle-color: #ddd !default;
 
 		.pointer {
 			position: absolute;
-			height: 5px;
+			height: 10px;
 			margin: 0 0 0 -5px;
 			border: 5px solid transparent;
-			border-top-color: rgba(0, 0, 0, 0.8);
+			border-top-color: $popup_bg;
 		}
 	}
 }
