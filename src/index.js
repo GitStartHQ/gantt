@@ -661,31 +661,32 @@ export default class Gantt {
             }
         );
     }
-
+    // Dragging and moving left is disabled
     bind_bar_events() {
-        let is_dragging = false;
+       // let is_dragging = false;
         let x_on_start = 0;
         let y_on_start = 0;
-        let is_resizing_left = false;
+        // let is_resizing_left = false;
         let is_resizing_right = false;
         let parent_bar_id = null;
         let bars = []; // instanceof Bar
         this.bar_being_dragged = null;
 
         function action_in_progress() {
-            return is_dragging || is_resizing_left || is_resizing_right;
+            return /*is_dragging || is_resizing_left ||*/ is_resizing_right;
         }
 
         $.on(this.$svg, 'mousedown', '.bar-wrapper, .handle', (e, element) => {
+             this.hide_popup();
             const bar_wrapper = $.closest('.bar-wrapper', element);
 
-            if (element.classList.contains('left')) {
+            /*if (element.classList.contains('left')) {
                 is_resizing_left = true;
-            } else if (element.classList.contains('right')) {
+            } else */if (element.classList.contains('right')) {
                 is_resizing_right = true;
-            } else if (element.classList.contains('bar-wrapper')) {
+            }/* else if (element.classList.contains('bar-wrapper')) {
                 is_dragging = true;
-            }
+            } */
 
             bar_wrapper.classList.add('active');
 
@@ -712,6 +713,7 @@ export default class Gantt {
 
         $.on(this.$svg, 'mousemove', (e) => {
             if (!action_in_progress()) return;
+            this.hide_popup();
             const dx = e.offsetX - x_on_start;
             const dy = e.offsetY - y_on_start;
 
@@ -719,7 +721,7 @@ export default class Gantt {
                 const $bar = bar.$bar;
                 $bar.finaldx = this.get_snap_position(dx);
 
-                if (is_resizing_left) {
+               /* if (is_resizing_left) {
                     if (parent_bar_id === bar.task.id) {
                         bar.update_bar_position({
                             x: $bar.ox + $bar.finaldx,
@@ -730,25 +732,25 @@ export default class Gantt {
                             x: $bar.ox + $bar.finaldx,
                         });
                     }
-                } else if (is_resizing_right) {
+                } else  */if (is_resizing_right) {
                     if (parent_bar_id === bar.task.id) {
                         bar.update_bar_position({
                             width: $bar.owidth + $bar.finaldx,
                         });
                     }
-                } else if (is_dragging) {
+                } /*else if (is_dragging) {
                     bar.update_bar_position({ x: $bar.ox + $bar.finaldx });
-                }
+                } */
             });
         });
 
         document.addEventListener('mouseup', (e) => {
-            if (is_dragging || is_resizing_left || is_resizing_right) {
+            if (/*is_dragging || is_resizing_left ||*/ is_resizing_right) {
                 bars.forEach((bar) => bar.group.classList.remove('active'));
             }
 
-            is_dragging = false;
-            is_resizing_left = false;
+           // is_dragging = false;
+           // is_resizing_left = false;
             is_resizing_right = false;
         });
 

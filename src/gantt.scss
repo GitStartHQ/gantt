@@ -39,7 +39,7 @@ $popup_bg: #9C43FF !default;
 		stroke: $border-color;
 		stroke-width: 0.5;
 		&.thick {
-			stroke-width: 0.5;
+			stroke-width: 1;
 		}
 	}
 	.today-highlight {
