@@ -541,7 +541,7 @@ class Bar {
     }
 
     draw_label() {
-        createSVG('text', {
+        this.bar_label = createSVG('text', {
             x: this.x + this.width / 2,
             y: this.y + this.height / 2,
             innerHTML: this.task.name,
@@ -607,6 +607,7 @@ class Bar {
     }
 
     setup_click_event() {
+
         $.on(this.group, 'focus ' + this.gantt.options.popup_trigger, e => {
             if (this.action_completed) {
                 // just finished a move action, wait for a few seconds
@@ -622,6 +623,8 @@ class Bar {
 
             this.show_popup();
         });
+
+        $.on(this.bar_label, 'focus click', e => this.task.on_label_click(e, this.task.name));
     }
 
     show_popup() {
