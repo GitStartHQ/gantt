@@ -1,6 +1,5 @@
 export default class Popup {
     constructor(parent, custom_html) {
-        console.log(`parent: ${JSON.stringify(parent)}`)
         this.parent = parent;
         this.custom_html = custom_html;
         this.make();

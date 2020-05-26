@@ -88,7 +88,6 @@ export default class Gantt {
             language: 'en',
             popup_text: '',
         };
-        console.log(`options: ${JSON.stringify(options)}`);
         this.options = Object.assign({}, default_options, options);
     }
 
