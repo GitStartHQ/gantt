@@ -712,8 +712,8 @@ export default class Gantt {
         });
 
         $.on(this.$svg, 'mousemove', (e) => {
-            if (!action_in_progress()) return;
             this.hide_popup();
+            if (!action_in_progress()) return;
             const dx = e.offsetX - x_on_start;
             const dy = e.offsetY - y_on_start;
 
