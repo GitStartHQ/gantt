@@ -141,7 +141,7 @@ export default class Bar {
             x: bar.getX() + 1,
             y: bar.getY() + 1,
             width: handle_width,
-            height: this.height - 2,
+            height: 0, // To remove left Handle 
             rx: this.corner_radius,
             ry: this.corner_radius,
             class: 'handle left',
