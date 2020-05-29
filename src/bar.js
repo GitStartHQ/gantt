@@ -176,14 +176,14 @@ export default class Bar {
 
     setup_click_event() {
 
-        $.on(this.group, 'focus ' + this.gantt.options.popup_trigger, e => {
+        $.on(this.group, this.gantt.options.popup_trigger, e => {
             if (this.action_completed) {
                 // just finished a move action, wait for a few seconds
                 return;
             }
 
-            if (e.type === 'click') {
-                this.gantt.trigger_event('click', [this.task]);
+            if (e.type === this.gantt.options.popup_trigger) {
+                this.gantt.trigger_event(this.gantt.options.popup_trigger, [this.task]);
             }
 
             this.gantt.unselect_all();
@@ -192,7 +192,7 @@ export default class Bar {
             this.show_popup();
         });
 
-        $.on(this.bar_label, 'focus click', e => this.task.on_label_click(e, this.task.name));
+        $.on(this.group, 'focus click', e => this.task.on_label_click(e, this.task.name));
     }
 
     show_popup() {

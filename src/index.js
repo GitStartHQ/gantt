@@ -83,7 +83,7 @@ export default class Gantt {
             padding: 18,
             view_mode: 'Day',
             date_format: 'YYYY-MM-DD',
-            popup_trigger: 'click',
+            popup_trigger: 'mouseover',
             custom_popup_html: null,
             language: 'en',
             popup_text: '',
@@ -238,7 +238,7 @@ export default class Gantt {
             this.gantt_start = date_utils.add(this.gantt_start, -3, 'year');
             this.gantt_end = date_utils.add(this.gantt_end, 3, 'year');
         } else {
-            this.gantt_start = date_utils.add(this.gantt_start, -1, 'month');
+            this.gantt_start = date_utils.add(this.gantt_start, 0, 'month');
             this.gantt_end = date_utils.add(this.gantt_end, 1, 'month');
         }
     }
@@ -709,9 +709,11 @@ export default class Gantt {
                 $bar.finaldx = 0;
             });
         });
+        $.on(this.$svg, 'mouseleave', e => {
+            this.hide_popup();
+        });
 
         $.on(this.$svg, 'mousemove', (e) => {
-            this.hide_popup();
             if (!action_in_progress()) return;
             const dx = e.offsetX - x_on_start;
             const dy = e.offsetY - y_on_start;
