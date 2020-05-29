@@ -12,14 +12,13 @@ export default class Popup {
             <div class="pointer"></div>
         `;
 
-        this.hide();
-
         this.title = this.parent.querySelector('.title');
         this.subtitle = this.parent.querySelector('.subtitle');
         this.pointer = this.parent.querySelector('.pointer');
     }
 
     show(options) {
+        this.make();
         if (!options.target_element) {
             throw new Error('target_element is required to show popup');
         }
@@ -62,6 +61,6 @@ export default class Popup {
     }
 
     hide() {
-        this.parent.style.opacity = 0;
+        this.parent.innerHTML = '' ;
     }
 }
