@@ -10,167 +10,211 @@ $text-color: #333 !default;
 $blue: #a3a3ff !default;
 $handle-color: #ddd !default;
 $popup_bg: #9C43FF !default;
+$coherent-dark: #201A3D !default;
 
 .gantt {
-	.grid-background {
-		fill: none;
-	}
-	.grid-header {
-		fill: $grid-bg;
-		opacity: 0.3;
-	}
-	.grid-header-stroke {
-		stroke: $border-color;
-		stroke-width: 10;
-		margin-bottom: 20px;
-	}
-	.grid-row {
-		fill: $grid-bg;
-		opacity: 0.4;
-	}
-	.grid-row:nth-child(even) {
-		fill: $grid-bg;
-		opacity: 0.4;
-	}
-	.row-line {
-		stroke: $light-border-color;
-	}
-	.tick {
-		stroke: $border-color;
-		stroke-width: 0.5;
-		&.thick {
-			stroke-width: 1;
-		}
-	}
-	.today-highlight {
-		fill: $light-yellow;
-		opacity: 0.5;
-	}
+  .grid-background {
+    fill: none;
+  }
 
-	.arrow {
-		fill: none;
-		stroke: $text-muted;
-		stroke-width: 1.4;
-	}
+  .grid-header {
+    fill: $grid-bg;
+    opacity: 0.3;
+  }
 
-	.bar {
-		fill: $bar-color;
-		stroke: $bar-stroke;
-		stroke-width: 0;
-		transition: stroke-width .3s ease;
-		user-select: none;
-	}
-	.bar-progress {
-		fill: $blue;
-	}
-	.bar-invalid {
-		fill: transparent;
-		stroke: $bar-stroke;
-		stroke-width: 1;
-		stroke-dasharray: 5;
+  .grid-header-stroke {
+    stroke: $border-color;
+    stroke-width: 10;
+    margin-bottom: 20px;
+  }
 
-		&~.bar-label {
-			fill: $text-light;
-		}
-	}
-	.bar-label {
-		fill: #fff;
-		dominant-baseline: central;
-		text-anchor: middle;
-		font-size: 12px;
-		font-weight: lighter;
+  .grid-row {
+    fill: $grid-bg;
+    opacity: 0.4;
+  }
 
-		&.big {
-			fill: $text-light;
-			text-anchor: start;
-		}
-	}
+  .grid-row:nth-child(even) {
+    fill: $grid-bg;
+    opacity: 0.4;
+  }
 
-	.handle {
-		fill: $handle-color;
-		cursor: ew-resize;
-		opacity: 0;
-		visibility: hidden;
-		transition: opacity .3s ease;
-	}
+  .row-line {
+    stroke: $light-border-color;
+  }
 
-	.bar-wrapper {
-		cursor: pointer;
-		outline: none;
+  .tick {
+    stroke: $border-color;
+    stroke-width: 0.5;
 
-		&:hover {
-			.bar {
-				fill: #201A3D;
-			}
+    &.thick {
+      stroke-width: 1;
+    }
+  }
 
-			.bar-progress {
-				fill: darken($blue, 5);
-			}
+  .today-highlight {
+    fill: $light-yellow;
+    opacity: 0.5;
+  }
 
-			.handle {
-				visibility: visible;
-				opacity: 1;
-			}
-		}
+  .arrow {
+    fill: none;
+    stroke: $text-muted;
+    stroke-width: 1.4;
+  }
 
-		&.active {
-			.bar {
-				fill: #201A3D;
-			}
+  .bar {
+    fill: $bar-color;
+    stroke: $bar-stroke;
+    stroke-width: 0;
+    transition: stroke-width .3s ease;
+    user-select: none;
+  }
 
-			.bar-progress {
-				fill: darken($blue, 5);
-			}
-		}
-	}
+  .bar-progress {
+    fill: $blue;
+  }
 
-	.lower-text, .upper-text {
-		font-size: 12px;
-		text-anchor: middle;
-	}
-	.upper-text {
-		fill: $text-light;
-	}
-	.lower-text {
-		fill: $text-color;
-	}
+  .bar-invalid {
+    fill: transparent;
+    stroke: $bar-stroke;
+    stroke-width: 1;
+    stroke-dasharray: 5;
 
-	.hide {
-		display: none;
-	}
+    &~.bar-label {
+      fill: $text-light;
+    }
+  }
+
+  .bar-label {
+    fill: $coherent-dark;
+    dominant-baseline: central;
+    font-size: 16px;
+    font-weight: bold;
+
+    &.big {
+      fill: $text-light;
+      text-anchor: start;
+    }
+
+    &:hover {
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
+
+  .handle {
+    fill: $handle-color;
+    cursor: ew-resize;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .3s ease;
+  }
+
+  .menu-toggler-wrapper {
+    cursor: pointer;
+  }
+
+  .menu-toggler {
+    fill: $coherent-dark;
+    cursor: pointer;
+    opacity: 0;
+  }
+
+  .menu-toggler-dot {
+    fill: $coherent-dark;
+  }
+
+  .bar-wrapper {
+    outline: none;
+
+    &:hover {
+      .bar {
+        fill: $coherent-dark;
+      }
+
+      .bar-progress {
+        fill: darken($blue, 5);
+      }
+
+      .handle {
+        visibility: visible;
+        opacity: 1;
+      }
+
+      .menu-toggler-dot {
+        fill: #fff;
+      }
+
+      .bar-label {
+        fill: #fff;
+
+        &.big {
+          fill: $coherent-dark;
+        }
+      }
+    }
+
+    &.active {
+      .bar {
+        fill: $coherent-dark;
+      }
+
+      .bar-progress {
+        fill: darken($blue, 5);
+      }
+    }
+  }
+
+  .lower-text,
+  .upper-text {
+    font-size: 12px;
+    text-anchor: middle
+  }
+
+  .upper-text {
+    fill: $text-light;
+  }
+
+  .lower-text {
+    fill: $text-color;
+  }
+
+  .hide {
+    display: none;
+  }
 }
 
 .gantt-container {
-	position: relative;
-	overflow: auto;
-	font-size: 12px;
+  position: relative;
+  overflow: auto;
+  font-size: 12px;
 
-	.popup-wrapper {
-		position: absolute;
-		top: 0;
-		left: 0;
-		background: $popup_bg;
-		padding: 0;
-		color: #959da5;
-		border-radius: 3px;
+  .popup-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: $popup_bg;
+    padding: 0;
+    color: #959da5;
+    border-radius: 3px;
 
-		.title {
-			border-bottom: 3px solid $blue;
-			padding: 10px;
-			color: white;
-		}
+    .title {
+      border-bottom: 3px solid $blue;
+      padding: 10px;
+      color: white;
+    }
 
-		.subtitle {
-			padding: 10px;
-			color: #dfe2e5;
-		}
+    .subtitle {
+      padding: 10px;
+      color: #dfe2e5;
+    }
 
-		.pointer {
-			position: absolute;
-			height: 10px;
-			margin: 0 0 0 -5px;
-			border: 5px solid transparent;
-			border-top-color: $popup_bg;
-		}
-	}
+    .pointer {
+      position: absolute;
+      height: 10px;
+      margin: 0 0 0 -5px;
+      border: 5px solid transparent;
+      border-top-color: $popup_bg;
+    }
+  }
 }

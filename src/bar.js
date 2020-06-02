@@ -29,39 +29,42 @@ export default class Bar {
         this.duration =
             date_utils.diff(this.task._end, this.task._start, 'hour') /
             this.gantt.options.step;
-        this.width = this.gantt.options.column_width * this.duration;
+        this.width = Math.max(
+            this.gantt.options.column_width * this.duration,
+            this.gantt.options.bar_height
+        );
         this.progress_width =
             this.gantt.options.column_width *
                 this.duration *
                 (this.task.progress / 100) || 0;
         this.group = createSVG('g', {
             class: 'bar-wrapper ' + (this.task.custom_class || ''),
-            'data-id': this.task.id
+            'data-id': this.task.id,
         });
         this.bar_group = createSVG('g', {
             class: 'bar-group',
-            append_to: this.group
+            append_to: this.group,
         });
         this.handle_group = createSVG('g', {
             class: 'handle-group',
-            append_to: this.group
+            append_to: this.group,
         });
     }
 
     prepare_helpers() {
-        SVGElement.prototype.getX = function() {
+        SVGElement.prototype.getX = function () {
             return +this.getAttribute('x');
         };
-        SVGElement.prototype.getY = function() {
+        SVGElement.prototype.getY = function () {
             return +this.getAttribute('y');
         };
-        SVGElement.prototype.getWidth = function() {
+        SVGElement.prototype.getWidth = function () {
             return +this.getAttribute('width');
         };
-        SVGElement.prototype.getHeight = function() {
+        SVGElement.prototype.getHeight = function () {
             return +this.getAttribute('height');
         };
-        SVGElement.prototype.getEndX = function() {
+        SVGElement.prototype.getEndX = function () {
             return this.getX() + this.getWidth();
         };
     }
@@ -71,6 +74,7 @@ export default class Bar {
         this.draw_progress_bar();
         this.draw_label();
         this.draw_resize_handles();
+        this.draw_menu_toggler();
     }
 
     draw_bar() {
@@ -82,7 +86,7 @@ export default class Bar {
             rx: this.corner_radius,
             ry: this.corner_radius,
             class: 'bar',
-            append_to: this.bar_group
+            append_to: this.bar_group,
         });
 
         animateSVG(this.$bar, 'width', 0, this.width);
@@ -102,7 +106,7 @@ export default class Bar {
             rx: this.corner_radius,
             ry: this.corner_radius,
             class: 'bar-progress',
-            append_to: this.bar_group
+            append_to: this.bar_group,
         });
 
         animateSVG(this.$bar_progress, 'width', 0, this.progress_width);
@@ -110,11 +114,11 @@ export default class Bar {
 
     draw_label() {
         this.bar_label = createSVG('text', {
-            x: this.x + this.width / 2,
+            x: this.x + this.height * 1.1,
             y: this.y + this.height / 2,
             innerHTML: this.task.name,
             class: 'bar-label',
-            append_to: this.bar_group
+            append_to: this.bar_group,
         });
         // labels get BBox in the next tick
         requestAnimationFrame(() => this.update_label_position());
@@ -134,27 +138,84 @@ export default class Bar {
             rx: this.corner_radius,
             ry: this.corner_radius,
             class: 'handle right',
-            append_to: this.handle_group
+            append_to: this.handle_group,
         });
 
         createSVG('rect', {
             x: bar.getX() + 1,
             y: bar.getY() + 1,
             width: handle_width,
-            height: 0, // To remove left Handle 
+            height: 0, // To remove left Handle
             rx: this.corner_radius,
             ry: this.corner_radius,
             class: 'handle left',
-            append_to: this.handle_group
+            append_to: this.handle_group,
         });
 
         if (this.task.progress && this.task.progress < 100) {
             this.$handle_progress = createSVG('polygon', {
                 points: this.get_progress_polygon_points().join(','),
                 class: 'handle progress',
-                append_to: this.handle_group
+                append_to: this.handle_group,
             });
         }
+    }
+
+    draw_menu_toggler() {
+        if (this.invalid) return;
+
+        const bar = this.$bar;
+
+        const menuTogglerPosition = {
+            x: bar.getX() + this.height / 10,
+            y: bar.getY() + this.height / 10,
+            width: this.height - this.height / 5,
+            height: this.height - this.height / 5,
+        };
+
+        const menuToggler = createSVG('g', {
+            x: menuTogglerPosition.x,
+            y: menuTogglerPosition.y,
+            width: menuTogglerPosition.width,
+            height: menuTogglerPosition.height,
+            class: 'menu-toggler-wrapper left',
+            append_to: this.bar_group,
+        });
+
+        createSVG('circle', {
+            cx: menuTogglerPosition.x + menuTogglerPosition.width / 2,
+            cy: menuTogglerPosition.y + menuTogglerPosition.height / 2,
+            r: menuTogglerPosition.height / 2,
+            class: 'menu-toggler',
+            append_to: menuToggler,
+        });
+
+        createSVG('circle', {
+            cx: menuTogglerPosition.x + menuTogglerPosition.width / 2,
+            cy: menuTogglerPosition.y + menuTogglerPosition.height / 5,
+            r: menuTogglerPosition.height / 10,
+            class: 'menu-toggler-dot',
+            append_to: menuToggler,
+        });
+
+        createSVG('circle', {
+            cx: menuTogglerPosition.x + menuTogglerPosition.width / 2,
+            cy: menuTogglerPosition.y + menuTogglerPosition.height / 2,
+            r: menuTogglerPosition.height / 10,
+            class: 'menu-toggler-dot',
+            append_to: menuToggler,
+        });
+
+        createSVG('circle', {
+            cx: menuTogglerPosition.x + menuTogglerPosition.width / 2,
+            cy:
+                menuTogglerPosition.y +
+                menuTogglerPosition.height -
+                menuTogglerPosition.height / 5,
+            r: menuTogglerPosition.height / 10,
+            class: 'menu-toggler-dot',
+            append_to: menuToggler,
+        });
     }
 
     get_progress_polygon_points() {
@@ -165,7 +226,7 @@ export default class Bar {
             bar_progress.getEndX() + 5,
             bar_progress.getY() + bar_progress.getHeight(),
             bar_progress.getEndX(),
-            bar_progress.getY() + bar_progress.getHeight() - 8.66
+            bar_progress.getY() + bar_progress.getHeight() - 8.66,
         ];
     }
 
@@ -175,15 +236,16 @@ export default class Bar {
     }
 
     setup_click_event() {
-
-        $.on(this.group, this.gantt.options.popup_trigger, e => {
+        $.on(this.group, this.gantt.options.popup_trigger, (e) => {
             if (this.action_completed) {
                 // just finished a move action, wait for a few seconds
                 return;
             }
 
             if (e.type === this.gantt.options.popup_trigger) {
-                this.gantt.trigger_event(this.gantt.options.popup_trigger, [this.task]);
+                this.gantt.trigger_event(this.gantt.options.popup_trigger, [
+                    this.task,
+                ]);
             }
 
             this.gantt.unselect_all();
@@ -192,13 +254,26 @@ export default class Bar {
             this.show_popup();
         });
 
-        $.on(this.group, 'focus click', e => this.task.on_label_click(e, this.task.name));
+        $.on(this.group, 'click', (e) => {
+            if (e.target.classList.contains('bar-label')) {
+                this.task.on_label_click(e, this.task.name);
+            } else if (
+                e.target.classList.contains('menu-toggler') ||
+                e.target.classList.contains('menu-toggler-dot')
+            ) {
+                // TODO: Handle menu
+            }
+        });
     }
 
     show_popup() {
         if (this.gantt.bar_being_dragged) return;
 
-        const start_date = date_utils.format(this.task._start, 'MMM D', this.gantt.options.language);
+        const start_date = date_utils.format(
+            this.task._start,
+            'MMM D',
+            this.gantt.options.language
+        );
         const end_date = date_utils.format(
             date_utils.add(this.task._end, -1, 'second'),
             'MMM D',
@@ -218,7 +293,7 @@ export default class Bar {
         const bar = this.$bar;
         if (x) {
             // get all x values of parent task
-            const xs = this.task.dependencies.map(dep => {
+            const xs = this.task.dependencies.map((dep) => {
                 return this.gantt.get_bar(dep).$bar.getX();
             });
             // child task must not go before parent
@@ -259,7 +334,7 @@ export default class Bar {
         this.gantt.trigger_event('date_change', [
             this.task,
             new_start_date,
-            date_utils.add(new_end_date, -1, 'second')
+            date_utils.add(new_end_date, -1, 'second'),
         ]);
     }
 
@@ -294,7 +369,7 @@ export default class Bar {
 
     compute_progress() {
         const progress =
-            this.$bar_progress.getWidth() / this.$bar.getWidth() * 100;
+            (this.$bar_progress.getWidth() / this.$bar.getWidth()) * 100;
         return parseInt(progress, 10);
     }
 
@@ -304,11 +379,11 @@ export default class Bar {
         const gantt_start = this.gantt.gantt_start;
 
         const diff = date_utils.diff(task_start, gantt_start, 'hour');
-        let x = diff / step * column_width;
+        let x = (diff / step) * column_width;
 
         if (this.gantt.view_is('Month')) {
             const diff = date_utils.diff(task_start, gantt_start, 'day');
-            x = diff * column_width / 30;
+            x = (diff * column_width) / 30;
         }
         return x;
     }
@@ -376,10 +451,10 @@ export default class Bar {
 
         if (label.getBBox().width > bar.getWidth()) {
             label.classList.add('big');
-            label.setAttribute('x', bar.getX() + bar.getWidth() + 5);
+            label.setAttribute('x', bar.getX() + this.height * 1.1);
         } else {
             label.classList.remove('big');
-            label.setAttribute('x', bar.getX() + bar.getWidth() / 2);
+            label.setAttribute('x', bar.getX() + this.height * 1.1);
         }
     }
 
