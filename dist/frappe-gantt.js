@@ -1391,7 +1391,7 @@ class Gantt {
         });
 
         $.attr(this.$svg, {
-            height: grid_height + this.options.padding + 100,
+            height: grid_height,
             width: '100%',
         });
     }
@@ -1464,7 +1464,10 @@ class Gantt {
                 tick_class += ' thick';
             }
             // thick ticks for quarters
-            if ((this.view_is('Month') || this.view_is('Quarter')) && (date.getMonth() + 1) % 3 === 0) {
+            if (
+                (this.view_is('Month') || this.view_is('Quarter')) &&
+                (date.getMonth() + 1) % 3 === 0
+            ) {
                 tick_class += ' thick';
             }
 
@@ -1731,7 +1734,7 @@ class Gantt {
     }
     // Dragging and moving left is disabled
     bind_bar_events() {
-       // let is_dragging = false;
+        // let is_dragging = false;
         let x_on_start = 0;
         let y_on_start = 0;
         // let is_resizing_left = false;
@@ -1745,14 +1748,16 @@ class Gantt {
         }
 
         $.on(this.$svg, 'mousedown', '.bar-wrapper, .handle', (e, element) => {
-             this.hide_popup();
+            this.hide_popup();
             const bar_wrapper = $.closest('.bar-wrapper', element);
 
             /*if (element.classList.contains('left')) {
                 is_resizing_left = true;
-            } else */if (element.classList.contains('right')) {
+            } else */ if (
+                element.classList.contains('right')
+            ) {
                 is_resizing_right = true;
-            }/* else if (element.classList.contains('bar-wrapper')) {
+            } /* else if (element.classList.contains('bar-wrapper')) {
                 is_dragging = true;
             } */
 
@@ -1778,7 +1783,7 @@ class Gantt {
                 $bar.finaldx = 0;
             });
         });
-        $.on(this.$svg, 'mouseleave', e => {
+        $.on(this.$svg, 'mouseleave', (e) => {
             this.hide_popup();
         });
 
@@ -1791,7 +1796,7 @@ class Gantt {
                 const $bar = bar.$bar;
                 $bar.finaldx = this.get_snap_position(dx);
 
-               /* if (is_resizing_left) {
+                /* if (is_resizing_left) {
                     if (parent_bar_id === bar.task.id) {
                         bar.update_bar_position({
                             x: $bar.ox + $bar.finaldx,
@@ -1802,7 +1807,9 @@ class Gantt {
                             x: $bar.ox + $bar.finaldx,
                         });
                     }
-                } else  */if (is_resizing_right) {
+                } else  */ if (
+                    is_resizing_right
+                ) {
                     if (parent_bar_id === bar.task.id) {
                         bar.update_bar_position({
                             width: $bar.owidth + $bar.finaldx,
@@ -1819,8 +1826,8 @@ class Gantt {
                 bars.forEach((bar) => bar.group.classList.remove('active'));
             }
 
-           // is_dragging = false;
-           // is_resizing_left = false;
+            // is_dragging = false;
+            // is_resizing_left = false;
             is_resizing_right = false;
         });
 
