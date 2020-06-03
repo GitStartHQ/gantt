@@ -688,12 +688,14 @@ class Bar {
 
         $.on(this.group, 'click', (e) => {
             if (e.target.classList.contains('bar-label')) {
-                this.task.on_label_click(e, this.task.name);
+                this.task.on_label_click &&
+                    this.task.on_label_click(e, this.task.name);
             } else if (
                 e.target.classList.contains('menu-toggler') ||
                 e.target.classList.contains('menu-toggler-dot')
             ) {
-                // TODO: Handle menu
+                this.task.on_open_menu &&
+                    this.task.on_open_menu(e, this.task.name);
             }
         });
     }
