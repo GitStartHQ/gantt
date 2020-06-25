@@ -21,6 +21,7 @@ export default class Bar {
     }
 
     prepare_values() {
+        const handle_width = 8;
         this.invalid = this.task.invalid;
         this.height = this.gantt.options.bar_height;
         this.x = this.compute_x();
@@ -31,7 +32,9 @@ export default class Bar {
             this.gantt.options.step;
         this.width = Math.max(
             this.gantt.options.column_width * this.duration,
-            this.gantt.options.bar_height
+            this.gantt.options.enable_menu_toggler
+                ? this.gantt.options.bar_height
+                : handle_width * 3
         );
         this.progress_width =
             this.gantt.options.column_width *
@@ -145,7 +148,7 @@ export default class Bar {
             x: bar.getX() + 1,
             y: bar.getY() + 1,
             width: handle_width,
-            height: 0, // To remove left Handle
+            height: this.height - 2,
             rx: this.corner_radius,
             ry: this.corner_radius,
             class: 'handle left',
@@ -162,7 +165,7 @@ export default class Bar {
     }
 
     draw_menu_toggler() {
-        if (this.invalid) return;
+        if (!this.gantt.options.enable_menu_toggler || this.invalid) return;
 
         const bar = this.$bar;
 
@@ -246,6 +249,10 @@ export default class Bar {
                 this.gantt.trigger_event(this.gantt.options.popup_trigger, [
                     this.task,
                 ]);
+            }
+
+            if (e.target.classList.contains('big')) {
+                return;
             }
 
             this.gantt.unselect_all();
@@ -393,7 +400,7 @@ export default class Bar {
     compute_y() {
         return (
             this.gantt.options.header_height +
-            this.gantt.options.padding +
+            this.gantt.options.padding * 2 +
             this.task._index * (this.height + this.gantt.options.padding)
         );
     }
@@ -449,14 +456,27 @@ export default class Bar {
 
     update_label_position() {
         const bar = this.$bar,
-            label = this.group.querySelector('.bar-label');
+            label = this.group.querySelector('.bar-label'),
+            handle_width = 8;
 
         if (label.getBBox().width > bar.getWidth()) {
             label.classList.add('big');
-            label.setAttribute('x', bar.getX() + this.height * 1.1);
+            label.setAttribute(
+                'x',
+                bar.getX() +
+                    (this.gantt.options.enable_menu_toggler
+                        ? this.height * 1.1
+                        : bar.getWidth() + 5)
+            );
         } else {
             label.classList.remove('big');
-            label.setAttribute('x', bar.getX() + this.height * 1.1);
+            label.setAttribute(
+                'x',
+                bar.getX() +
+                    (this.gantt.options.enable_menu_toggler
+                        ? this.height * 1.1
+                        : handle_width * 3 + 5)
+            );
         }
     }
 

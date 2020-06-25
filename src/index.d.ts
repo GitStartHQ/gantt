@@ -36,6 +36,7 @@ declare module 'frappe-gantt' {
         padding?: number;
         view_mode?: viewMode;
         date_format?: string;
+        enable_menu_toggler?: boolean;
         custom_popup_html?: string | ((task: any) => string);
         on_click?: (task: any) => void;
         on_date_change?: (task: any, start: string, end: string) => void;

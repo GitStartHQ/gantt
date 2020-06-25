@@ -87,6 +87,8 @@ export default class Gantt {
             custom_popup_html: null,
             language: 'en',
             popup_text: '',
+            font_size: 16,
+            enable_menu_toggler: false,
         };
         this.options = Object.assign({}, default_options, options);
     }
@@ -310,7 +312,8 @@ export default class Gantt {
             this.options.header_height +
             this.options.padding +
             (this.options.bar_height + this.options.padding) *
-                this.tasks.length;
+                this.tasks.length +
+            80;
 
         createSVG('rect', {
             x: 0,
@@ -551,10 +554,13 @@ export default class Gantt {
                     : '',
         };
 
+        // Line height: c
         const base_pos = {
             x: i * this.options.column_width,
-            lower_y: this.options.header_height,
-            upper_y: this.options.header_height - 25,
+            lower_y:
+                this.options.header_height / 2 +
+                (this.options.font_size * 3) / 2,
+            upper_y: (this.options.header_height - this.options.font_size) / 2,
         };
 
         const x_pos = {
@@ -668,25 +674,23 @@ export default class Gantt {
         // let is_dragging = false;
         let x_on_start = 0;
         let y_on_start = 0;
-        // let is_resizing_left = false;
+        let is_resizing_left = false;
         let is_resizing_right = false;
         let parent_bar_id = null;
         let bars = []; // instanceof Bar
         this.bar_being_dragged = null;
 
         function action_in_progress() {
-            return /*is_dragging || is_resizing_left ||*/ is_resizing_right;
+            return /*is_dragging || */ is_resizing_left || is_resizing_right;
         }
 
         $.on(this.$svg, 'mousedown', '.bar-wrapper, .handle', (e, element) => {
             this.hide_popup();
             const bar_wrapper = $.closest('.bar-wrapper', element);
 
-            /*if (element.classList.contains('left')) {
+            if (element.classList.contains('left')) {
                 is_resizing_left = true;
-            } else */ if (
-                element.classList.contains('right')
-            ) {
+            } else if (element.classList.contains('right')) {
                 is_resizing_right = true;
             } /* else if (element.classList.contains('bar-wrapper')) {
                 is_dragging = true;
@@ -727,7 +731,7 @@ export default class Gantt {
                 const $bar = bar.$bar;
                 $bar.finaldx = this.get_snap_position(dx);
 
-                /* if (is_resizing_left) {
+                if (is_resizing_left) {
                     if (parent_bar_id === bar.task.id) {
                         bar.update_bar_position({
                             x: $bar.ox + $bar.finaldx,
@@ -738,9 +742,7 @@ export default class Gantt {
                             x: $bar.ox + $bar.finaldx,
                         });
                     }
-                } else  */ if (
-                    is_resizing_right
-                ) {
+                } else if (is_resizing_right) {
                     if (parent_bar_id === bar.task.id) {
                         bar.update_bar_position({
                             width: $bar.owidth + $bar.finaldx,
@@ -753,12 +755,12 @@ export default class Gantt {
         });
 
         document.addEventListener('mouseup', (e) => {
-            if (/*is_dragging || is_resizing_left ||*/ is_resizing_right) {
+            if (/*is_dragging || */ is_resizing_left || is_resizing_right) {
                 bars.forEach((bar) => bar.group.classList.remove('active'));
             }
 
             // is_dragging = false;
-            // is_resizing_left = false;
+            is_resizing_left = false;
             is_resizing_right = false;
         });
 
